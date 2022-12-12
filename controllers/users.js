@@ -31,6 +31,7 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
+    .orFail(new Error('NotFound'))
     .then((user) => res.status(200).send(user))
     .then(() => console.log('пользователь создан'))
     .catch((err) => {
@@ -48,6 +49,7 @@ module.exports.updateUser = (req, res) => {
     { name, about },
     { runValidators: true }, // данные будут валидированы перед изменением
   )
+    .orFail(new Error('NotFound'))
     .then((user) => res.status(200).send(
       { name: user.name, about: user.about, avatar: user.avatar },
     ))
@@ -70,6 +72,7 @@ module.exports.updateAvatar = (req, res) => {
     avatar,
     { new: true, runValidators: true }, // данные будут валидированы перед изменением
   )
+    .orFail(new Error('NotFound'))
     .then((user) => res.status(200).send({ avatar: user.avatar }))
     .then(() => console.log('аватар пользователя обновлен'))
     .catch((err) => {

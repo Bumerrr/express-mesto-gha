@@ -17,6 +17,7 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
+    .orFail(new Error('NotFound'))
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'BadRequest') {
@@ -29,6 +30,7 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCardById = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
+    .orFail(new Error('NotFound'))
     .then((card) => res.send(card))
     .then(() => console.log('Карточка удалена'))
     .catch((err) => {
@@ -45,6 +47,7 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .orFail(new Error('NotFound'))
     .then((card) => res.send(card))
     .then(() => console.log('лайк поставлен'))
     .catch((err) => {
@@ -64,6 +67,7 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
+    .orFail(new Error('NotFound'))
     .then((card) => res.send(card))
     .then(() => console.log('лайк убран'))
     .catch((err) => {
