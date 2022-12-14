@@ -2,6 +2,7 @@
 const User = require('../models/user');
 const {
   OK, // OK
+  CREATED, // 201
   BAD_REQUEST, // 400
   NOT_FOUND, // 404
   SERVER_ERROR, // 500
@@ -37,9 +38,7 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .orFail(new Error('NotFound'))
-    .then((user) => res.status(OK).send(user))
-    .then(() => console.log('пользователь создан'))
+    .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
@@ -57,7 +56,7 @@ module.exports.updateUser = (req, res) => {
   )
     .orFail(new Error('NotFound'))
     .then((user) => res.status(OK).send(
-      { name: user.name, about: user.about, avatar: user.avatar },
+      { name: user.name, about: user.about },
     ))
     .then(() => console.log('данные пользователя обновлены'))
     .catch((err) => {

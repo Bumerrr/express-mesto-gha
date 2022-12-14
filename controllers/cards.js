@@ -39,6 +39,9 @@ module.exports.deleteCardById = (req, res) => {
     .then((card) => res.status(OK).send(card))
     .then(() => console.log('Карточка удалена'))
     .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.' });
+      }
       if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
       }
@@ -54,13 +57,12 @@ module.exports.likeCard = (req, res) => {
   )
     .orFail(new Error('NotFound'))
     .then((card) => res.status(OK).send(card))
-    .then(() => console.log('лайк поставлен'))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       }
       if (err.message === 'NotFound') {
-        return res.status(NOT_FOUND).send({ message: 'Передан несуществующий _id карточки. ' });
+        return res.status(NOT_FOUND).send({ message: 'Передан несуществующий _id карточки.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
     });
@@ -74,13 +76,12 @@ module.exports.dislikeCard = (req, res) => {
   )
     .orFail(new Error('NotFound'))
     .then((card) => res.status(OK).send(card))
-    .then(() => console.log('лайк убран'))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для снятия лайка.' });
       }
       if (err.message === 'NotFound') {
-        return res.status(NOT_FOUND).send({ message: 'Передан несуществующий _id карточки. ' });
+        return res.status(NOT_FOUND).send({ message: 'Передан несуществующий _id карточки.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
     });
