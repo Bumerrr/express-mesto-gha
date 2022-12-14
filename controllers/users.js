@@ -41,7 +41,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные.' });
       }
       if (err.message === 'NotFound') {
         return res.status(NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден.' });
