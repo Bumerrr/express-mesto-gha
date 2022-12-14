@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-// const router = require('./routes');
+const rateLimit = require('express-rate-limit');
+
+const helmet = require('helmet');
 
 const usersRoutes = require('./routes/users');
 
@@ -33,14 +35,24 @@ async function connect() {
   }
 }
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
 app.get('/', (req, res) => {
   res.send('немного текста');
 });
 
+app.use(express.json());
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Not found' });
 });
+app.use(limiter);
+app.use(helmet());
 
 connect();
