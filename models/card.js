@@ -3,22 +3,22 @@ const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({
   name: {
-    required: true,
     type: String,
     maxlength: 30,
     minlength: 2,
+    required: true,
   },
   link: {
-    required: true,
     type: String,
     validate: {
       validator: (v) => validator.isURL(v),
       message: 'ссылка на аватар должна быть валидной',
     },
+    required: true,
   },
   owner: {
-    required: true,
     type: mongoose.Types.ObjectId,
+    required: true,
   },
   likes: [{
     type: mongoose.Types.ObjectId,
