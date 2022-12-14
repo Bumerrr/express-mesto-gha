@@ -13,7 +13,7 @@ const {
 cardRouter.get('/', getCards);
 cardRouter.post('/', express.json(), createCard);
 cardRouter.delete('/:cardId', deleteCardById);
-cardRouter.patch('/:cardId/likes', likeCard);
+cardRouter.put('/:cardId/likes', likeCard);
 cardRouter.delete('/:cardId/likes', dislikeCard);
 
 module.exports = cardRouter;

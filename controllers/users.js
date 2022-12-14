@@ -55,7 +55,7 @@ module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { runValidators: true }, // данные будут валидированы перед изменением
+    { new: true, runValidators: true }, // данные будут валидированы перед изменением
   )
     .orFail(new Error('NotFound'))
     .then((user) => res.status(OK).send(
@@ -63,7 +63,7 @@ module.exports.updateUser = (req, res) => {
     ))
     .then(() => console.log('данные пользователя обновлены'))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       }
       if (err.message === 'NotFound') {
