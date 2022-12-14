@@ -36,14 +36,17 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCardById = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
-    .then((card) => res.status(OK).send(card))
+    .then((card) => {
+      if (!card) {
+        return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
+      }
+
+      return res.status(OK).send(card);
+    })
     .then(() => console.log('Карточка удалена'))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.' });
-      }
-      if (err.message === 'NotFound') {
-        return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
     });
