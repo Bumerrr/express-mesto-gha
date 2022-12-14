@@ -11,7 +11,7 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(OK).send(users))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
@@ -24,7 +24,7 @@ module.exports.getUserById = (req, res) => {
     .orFail(new Error('NotFound'))
     .then((user) => res.status(OK).send(user))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'id невалиден' });
       }
       if (err.message === 'NotFound') {
@@ -41,7 +41,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(OK).send(user))
     .then(() => console.log('пользователь создан'))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
@@ -61,7 +61,7 @@ module.exports.updateUser = (req, res) => {
     ))
     .then(() => console.log('данные пользователя обновлены'))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       }
       if (err.message === 'NotFound') {
@@ -82,7 +82,7 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.status(OK).send({ avatar: user.avatar }))
     .then(() => console.log('аватар пользователя обновлен'))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
       }
       if (err.message === 'NotFound') {

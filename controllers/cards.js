@@ -13,7 +13,7 @@ module.exports.getCards = (req, res) => {
     .populate(['owner', 'likes'])
     .then((cards) => res.status(OK).send(cards))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
@@ -26,7 +26,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then((card) => res.status(CREATED).send(card))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.' });
       }
       return res.status(SERVER_ERROR).send({ message: 'Ошибка по умолчанию.' });
@@ -56,7 +56,7 @@ module.exports.likeCard = (req, res) => {
     .then((card) => res.status(OK).send(card))
     .then(() => console.log('лайк поставлен'))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       }
       if (err.message === 'NotFound') {
@@ -76,7 +76,7 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => res.status(OK).send(card))
     .then(() => console.log('лайк убран'))
     .catch((err) => {
-      if (err.name === 'BadRequest') {
+      if (err.name === 'CastError') {
         return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные для снятия лайка.' });
       }
       if (err.message === 'NotFound') {
