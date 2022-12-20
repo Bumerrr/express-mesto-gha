@@ -38,8 +38,8 @@ app.use(express.json());
 app.use(limiter);
 app.use(helmet());
 app.use(authRoutes);
-app.use('/users', usersRoutes);
 app.use(auth);
+app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
 app.use((req, res, next) => {
   next(new NotFoundError('Адреса по вашему запросу не существует'));
