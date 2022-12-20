@@ -1,27 +1,19 @@
 /* eslint-disable no-console */
 const express = require('express');
-
 const mongoose = require('mongoose');
 
 const app = express();
-
 const rateLimit = require('express-rate-limit');
-
+const { errors } = require('celebrate');
 const helmet = require('helmet');
-
 const usersRoutes = require('./routes/users');
-
 const cardsRoutes = require('./routes/cards');
+const auth = require('./midlewares/auth');
+const authRoutes = require('./routes/auth');
+
+const NotFoundError = require('./errors');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '63963126ff9a04d42d7836f0', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-
-  next();
-});
 
 async function connect() {
   try {
@@ -42,17 +34,27 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.get('/', (req, res) => {
-  res.send('немного текста');
-});
-
 app.use(express.json());
-app.use('/users', usersRoutes);
-app.use('/cards', cardsRoutes);
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Not found' });
-});
 app.use(limiter);
 app.use(helmet());
+app.use(authRoutes);
+app.use('/users', usersRoutes);
+app.use(auth);
+app.use('/cards', cardsRoutes);
+app.use((req, res, next) => {
+  next(new NotFoundError('Адреса по вашему запросу не существует'));
+});
+app.use(errors());
+app.use((err, req, res, next) => {
+  // если у ошибки нет статуса, выставляем 500
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
+    // проверяем статус и выставляем сообщение в зависимости от него
+    essage: statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : message,
+  });
+  next();
+});
 
 connect();

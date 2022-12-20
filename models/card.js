@@ -12,7 +12,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: (v) => validator.isURL(v),
-      message: 'ссылка на аватар должна быть валидной',
+      message: 'Введён некорректный URL',
     },
     required: true,
   },
