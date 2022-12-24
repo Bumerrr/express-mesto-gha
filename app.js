@@ -11,7 +11,7 @@ const cardsRoutes = require('./routes/cards');
 const auth = require('./midlewares/auth');
 const authRoutes = require('./routes/auth');
 
-const NotFoundError = require('./errors');
+const NotFoundError = require('./errors/not-found-error');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
@@ -37,24 +37,23 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(limiter);
 app.use(helmet());
+app.use(errors());
 app.use(authRoutes);
 app.use(auth);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
-app.use((req, res, next) => {
-  next(new NotFoundError('Адреса по вашему запросу не существует'));
+app.all('*', (req, res, next) => {
+  next(new NotFoundError({ message: 'Адреса по вашему запросу не существует' }));
 });
-app.use(errors());
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    // проверяем статус и выставляем сообщение в зависимости от него
-    essage: statusCode === 500
-      ? 'На сервере произошла ошибка'
-      : message,
-  });
-  next();
-});
+
+// app.use((err, req, res, next) => {
+//   const { statusCode = 500, message } = err;
+//   res.status(statusCode).send({
+//     essage: statusCode === 500
+//       ? 'На сервере произошла ошибка'
+//       : message,
+//   });
+//   next();
+// });
 
 connect();
