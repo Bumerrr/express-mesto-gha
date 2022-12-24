@@ -7,6 +7,7 @@ const {
   BadRequestError,
   ConflictError,
   UnauthorizedError,
+  NotFoundError,
 } = require('../errors');
 
 module.exports.createUser = (req, res, next) => {
@@ -33,7 +34,7 @@ module.exports.createUser = (req, res, next) => {
             return next(new BadRequestError('Введены некорретные данные'));
           }
           if (err.message === 'NotFoundError') {
-            return next(new BadRequestError('Пользователь с указанным _id не найден.'));
+            return next(new NotFoundError('Пользователь с указанным _id не найден.'));
           }
           next(err);
         });
