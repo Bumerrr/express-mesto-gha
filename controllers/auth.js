@@ -32,6 +32,9 @@ module.exports.createUser = (req, res, next) => {
           if (err.name === 'ValidationError') {
             return next(new BadRequestError('Введены некорретные данные'));
           }
+          if (err.message === 'NotFoundError') {
+            return next(new BadRequestError('Пользователь с указанным _id не найден.'));
+          }
           next(err);
         });
     }).catch(next);
