@@ -1,9 +1,9 @@
 const userRouter = require('express').Router();
 
 const {
-  validationFindUserById,
   validationUpdateUserInfo,
   validationUpdateUserAvatar,
+  validationFindUserById,
 } = require('../midlewares/joi');
 
 const {
