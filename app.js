@@ -11,7 +11,7 @@ const cardsRoutes = require('./routes/cards');
 const auth = require('./midlewares/auth');
 const authRoutes = require('./routes/auth');
 
-const NotFoundError = require('./errors');
+const { NotFoundError } = require('./errors');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 
@@ -42,10 +42,10 @@ app.use(authRoutes);
 app.use(auth);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
-app.use('*', () => {
-  throw new NotFoundError({ message: 'Адреса по вашему запросу не существует' });
-});
 app.use(errors());
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Адреса по вашему запросу не существует'));
+});
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
