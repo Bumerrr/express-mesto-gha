@@ -42,7 +42,7 @@ app.use(authRoutes);
 app.use(auth);
 app.use('/users', usersRoutes);
 app.use('/cards', cardsRoutes);
-app.use(() => {
+app.use('*', () => {
   throw new NotFoundError({ message: 'Адреса по вашему запросу не существует' });
 });
 app.use(errors());
