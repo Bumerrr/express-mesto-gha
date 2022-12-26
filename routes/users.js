@@ -4,7 +4,7 @@ const {
   validationUpdateUserInfo,
   validationUpdateUserAvatar,
   validationFindUserById,
-} = require('../midlewares/joi');
+} = require('../middlewares/joi');
 
 const {
   getUsers,

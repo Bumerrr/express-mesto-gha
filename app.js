@@ -8,7 +8,7 @@ const { errors } = require('celebrate');
 const helmet = require('helmet');
 const usersRoutes = require('./routes/users');
 const cardsRoutes = require('./routes/cards');
-const auth = require('./midlewares/auth');
+const auth = require('./middlewares/auth');
 const authRoutes = require('./routes/auth');
 
 const { NotFoundError } = require('./errors');
@@ -39,13 +39,12 @@ app.use(limiter);
 app.use(helmet());
 
 app.use(authRoutes);
-app.use(auth);
-app.use('/users', usersRoutes);
-app.use('/cards', cardsRoutes);
-app.use(errors());
+app.use('/users', auth, usersRoutes);
+app.use('/cards', auth, cardsRoutes);
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Адреса по вашему запросу не существует'));
 });
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;

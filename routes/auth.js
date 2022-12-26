@@ -3,7 +3,7 @@ const routerr = require('express').Router();
 const {
   validationSignUp,
   validationSignIn,
-} = require('../midlewares/joi');
+} = require('../middlewares/joi');
 
 const {
   createUser, login,

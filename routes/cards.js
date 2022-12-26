@@ -5,7 +5,7 @@ const {
   validationDeleteCard,
   validationLikeCard,
   validationDislikeCard,
-} = require('../midlewares/joi');
+} = require('../middlewares/joi');
 
 const {
   getCards,
